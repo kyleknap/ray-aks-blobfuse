@@ -23,7 +23,7 @@ Write-Host "ConfigMap updated with latest code." -ForegroundColor Green
 Write-Host "Deploying data preparation RayJob..."
 
 # Prepare data preparation job YAML with path substitution
-$dataprepYaml = Get-Content "k8s/rayjob-dataprep.yaml" -Raw
+$dataprepYaml = Get-Content "k8s/rayjob-dataprep-adlfs.yaml" -Raw
 
 # Substitute placeholder tokens with actual paths (from .env.example)
 $dataprepYaml = $dataprepYaml -replace "__DATA_DIR__", $DATA_DIR -replace "__CHECKPOINT_DIR__", $CHECKPOINT_DIR -replace "__APP_DIR__", $APP_DIR -replace "__CACHE_DIR__", $CACHE_DIR -replace "__WORKER_REPLICAS__", $WORKER_REPLICAS -replace "__NUM_WORKERS__", $NUM_WORKERS
@@ -47,7 +47,7 @@ Write-Host "Setting up monitoring..." -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 
 # Deploy monitoring stack (Grafana + Prometheus)
-Deploy-MonitoringStack | Out-Null
+# Deploy-MonitoringStack | Out-Null
 
 # ========== DASHBOARD ACCESS ==========
 
@@ -75,13 +75,13 @@ while (-not $headReady -and $waitTime -lt $maxWait) {
     }
 }
 
-if ($headReady) {
-    Write-Host ""
-    Open-AllDashboards
-} else {
-    Write-Host "Ray head pod not ready after $maxWait seconds. Open dashboards manually:" -ForegroundColor Yellow
-    Write-Host "  .\open-dashboard.ps1" -ForegroundColor Gray
-}
+# if ($headReady) {
+#     Write-Host ""
+#     Open-AllDashboards
+# } else {
+#     Write-Host "Ray head pod not ready after $maxWait seconds. Open dashboards manually:" -ForegroundColor Yellow
+#     Write-Host "  .\open-dashboard.ps1" -ForegroundColor Gray
+# }
 
 # Start monitoring
 Write-Host ""
